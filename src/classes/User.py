@@ -35,7 +35,7 @@ class User():
     #/show {n}
     def show_card(self, card_index):
         string = "%s shows a %s." % (self.name, self.hand[card_index])
-        return (string, string)
+        return Message(string, string)
 
     #/play {index}
     def play_card(self, card_index):
