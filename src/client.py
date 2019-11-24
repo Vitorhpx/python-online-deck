@@ -1,70 +1,69 @@
-import socket as socket
+import socket
+import select
+import errno
 import sys
-import re
+import threading
+
+HEADER_LENGTH = 10
+IP = "127.0.0.1"
+PORT = 1234
+my_username = input("Username: ")
 
 
-PORT = 5432
-MAX_LINE = 256
-MAX_RECIEVE_LINE = 1024
+def console(username, lock):
+    while True:
+        with lock:
+            message = input(f'')
 
-
-
-if len(sys.argv) > 1:
-    userInput = sys.argv[1]
-
-    [address, portAndFile] = userInput.split(":", 1)
-    [port, fileName] = portAndFile.split('/', 1)
-    name = address
-    port = int(port)
-
-    regex = re.compile(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$")
-    result = regex.match(address)
-
-    if not result:
-        address = socket.gethostbyname(address)
-
-    if not (port and fileName and address):
-        print("Entrada invalida")
-
-else:
-    print('usage: simplex-talk host \n', file=sys.stderr)
-    exit(1)
-
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    if not s:
-        print('simplex-talk: socket', file=sys.stderr)
-
-    if not s.connect((address, port)):
-        print('simplex-talk: connect', file=sys.stderr)
-    print('connected')
-
-    message = "GET /{fileName} HTTP/1.1\nHost: {address}\n".format(
-        fileName=fileName, address=name)
-    s.send(str.encode(message))
-
-    with open(fileName, 'wb') as f:
-        print('file opened')
-        data = bytes()
-        print('receiving data...')
-        while True:
-            dataRecieved = s.recv(MAX_RECIEVE_LINE)
-            if not dataRecieved:
-                break
-            data += dataRecieved
+            if message:
+                message = message.encode('utf-8')
+                message_header = f"{len(message):<{HEADER_LENGTH}}".encode('utf-8')
+                client_socket.send(message_header + message)
             
-        # print("Recieved Data: ", data)
-        # write data to a file
-        header = data.split(b'\n\n')[0]
-        # print("header: ", header.decode())
 
-        code = header.split(b' ')[1]
-        if code.decode() == "200":
-            fileData = (data.split(header + b'\n\n'))[1]
-            f.write(fileData)
-        elif code.decode() == "400":
-            print("File not found")
 
-        f.close()
-        print('file close()')
-    s.close()
 
+
+client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+client_socket.connect((IP, PORT))
+client_socket.setblocking(False)
+
+username = my_username.encode('utf-8')
+username_header = f"{len(username):<{HEADER_LENGTH}}".encode('utf-8')
+client_socket.send(username_header + username)
+
+stdout_lock = threading.Lock()
+send = threading.Thread(target=console, args=(my_username, stdout_lock))
+send.start()
+
+while True:
+    try:
+        while True:
+
+            username_header = client_socket.recv(HEADER_LENGTH)
+
+            if not len(username_header):
+                print('Connection closed by the server')
+                sys.exit()
+
+            username_length = int(username_header.decode('utf-8').strip())
+
+            username = client_socket.recv(username_length).decode('utf-8')
+
+            message_header = client_socket.recv(HEADER_LENGTH)
+            message_length = int(message_header.decode('utf-8').strip())
+            message = client_socket.recv(message_length).decode('utf-8')
+
+            print(f'{username} > {message}')
+
+    except IOError as e:
+
+        if e.errno != errno.EAGAIN and e.errno != errno.EWOULDBLOCK:
+            print('Reading error: {}'.format(str(e)))
+            sys.exit()
+        continue
+
+    except Exception as e:
+        # Any other exception - something happened, exit
+        print('Reading error: '.format(str(e)))
+        sys.exit()
