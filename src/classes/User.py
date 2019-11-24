@@ -19,10 +19,18 @@ class User():
     
     #/draw {n}
     def draw_card(self, n=1):
+        string = "You draw: {\n"
         for i in range(n):
             card = Deck.stack[-1].pop(-1)
             self.hand.append(card)
             card.player = self.ip_address
+            string += str(card) + "\n"
+        string += "}"
+        return string
+    
+    #/show {n}
+    def show_card(self, card_index):
+        return "%s shows a %s." % (self.name, self.hand[card_index])
 
     #/play {index}
     def play_card(self, card_index):

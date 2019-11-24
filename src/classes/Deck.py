@@ -20,6 +20,7 @@ class Deck():
     @classmethod
     def shuffle(cls):
         rd.shuffle(cls.stack)
+        return "The deck was shuffled"
 
     #/table
     @classmethod
@@ -31,7 +32,7 @@ class Deck():
             string += "\n}"
             return string
         else:
-            return "Nenhuma carta na mesa."
+            return "No cards on the table."
     
     #/reset
     @classmethod
@@ -42,6 +43,7 @@ class Deck():
                 if card.player != None:
                     card.player.hand = []
                 cls.stack.append(card)
+        return "The stack was reset."
     
     #/clear_table
     @classmethod
@@ -49,3 +51,4 @@ class Deck():
         while len(cls.table) > 0:
             card = cls.table.pop()
             cls.stack.insert(0, card)
+        return "All cards on the table were returned to the bottom of the stack"
