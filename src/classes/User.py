@@ -30,7 +30,7 @@ class User():
             card.player = self.name
             string += str(card) + "\n"
         string += "}"
-        return Message("%s drew a card" % (self.name), string)
+        return Message("%s drew %d card(s)" % (self.name, n), string)
 
     #/show {n}
     def show_card(self, card_index):
@@ -49,7 +49,7 @@ class User():
     def play_all(self):
         string = ""
         for card_index in range(len(self.hand)):
-            single_play_message = self.play_card(card_index).to_others
+            single_play_message = self.play_card(0).to_others
             string += single_play_message
         return Message(string, string)
     

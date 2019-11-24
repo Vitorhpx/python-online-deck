@@ -19,6 +19,15 @@ class Deck_Class():
                 cls.stack.append(card)
         cls.table = []
     
+    #/table-draw
+    @classmethod
+    def draw_table(cls):
+        card = cls.stack.pop(0)
+        card.state = CardState.TABLE
+        cls.table.append(card)
+        string = "A %s was put on the table." % (str(card))
+        return(string, string)
+
     #/stack
     @classmethod
     def count_deck(cls):

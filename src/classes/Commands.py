@@ -12,7 +12,8 @@ MANUAL = """
 /show {index}\n
 /roll {? range}\n
 /reset\n
-/stack
+/stack\n
+/table-draw
 """
 
 def getCommand(commandString, user:User):
@@ -44,11 +45,13 @@ def getCommand(commandString, user:User):
             if len(params) == 1:
                 return user.roll(params[0])
             else:
-                return user.roll
+                return user.roll()
         elif command == 'reset':
             return Deck.reset_deck()
         elif command == 'stack':
             return Deck.count_deck()
+        elif command == 'table-draw':
+            return Deck.draw_table()
         else:
             return Message("", "Invalid command.")
     except:
