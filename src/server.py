@@ -1,14 +1,15 @@
 import socket as socket
 import select as select
 import threading as threading
-from classes.Commands import getCommand
+from classes.User import User
 
 HEADER_LENGHT = 10
-HOST = '127.0.0.1'
+HOST = '10.0.0.191'
 PORT = 1234
 MAX_PENDING = 10
 MAX_LINE = 256
 MAX_SEND_LINE = 1024
+
 
 def receive_message(client_socket):
     try:
@@ -16,7 +17,10 @@ def receive_message(client_socket):
         if not len(message_header):
             return False
         message_length = int(message_header.decode('utf-8').strip())
-        return {'header': message_header, "data": client_socket.recv(message_length)}
+        return {
+            'header': message_header,
+            "data": client_socket.recv(message_length)
+        }
     except:
         return False
 
@@ -33,29 +37,34 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         for notified_socket in read_sockets:
             if notified_socket == s:
                 client_socket, client_address = s.accept()
-                user = receive_message(client_socket)
-                if user is False:
+                user_message = receive_message(client_socket)
+                if user_message is False:
                     continue
+                userHeader = user_message['header'].decode('utf-8')
+                userName = user_message['data'].decode('utf-8')
                 sockets_list.append(client_socket)
-                clients[client_socket] = user
-                print('Accepted new connection from {}:{}, username: {}'.format(
-                    *client_address, user['data'].decode('utf-8')))
+                clients[client_socket] = User(userHeader, userName)
+                print(
+                    'Accepted new connection from {}:{}, username: {}'.format(
+                        *client_address, userName))
             else:
                 message = receive_message(notified_socket)
                 if message is False:
-                    print('Closed connection from: {}'.format(
-                        clients[notified_socket]['data'].decode('utf-8')))
+                    print('Closed connection from: {}'.format(user.name))
                     sockets_list.remove(notified_socket)
                     del clients[notified_socket]
                     continue
                 user = clients[notified_socket]
                 print(
-                    f'Received message from {user["data"].decode("utf-8")}: {message["data"].decode("utf-8")}')
+                    f'Received message from {user.name}: {message["data"].decode("utf-8")}'
+                )
                 for client_socket in clients:
                     if client_socket != notified_socket:
 
                         client_socket.send(
-                            user['header'] + user['data'] + message['header'] + message['data'])
+                            user.header.encode('utf-8') +
+                            user.name.encode('utf-8') + message['header'] +
+                            message['data'])
 
         for notified_socket in exception_sockets:
             sockets_list.remove(notified_socket)

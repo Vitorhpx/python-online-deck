@@ -6,9 +6,10 @@ import threading
 
 HEADER_LENGTH = 10
 
-IP = "127.0.0.1"
+IP = "10.0.0.191"
 PORT = 1234
 my_username = input("Username: ")
+
 
 def console(username, lock):
     while True:
@@ -17,11 +18,9 @@ def console(username, lock):
 
             if message:
                 message = message.encode('utf-8')
-                message_header = f"{len(message):<{HEADER_LENGTH}}".encode('utf-8')
+                message_header = f"{len(message):<{HEADER_LENGTH}}".encode(
+                    'utf-8')
                 client_socket.send(message_header + message)
-            
-
-
 
 
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

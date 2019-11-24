@@ -1,6 +1,7 @@
-from Card import Card, CardState, Number, Suit
-from Message import Message
+from .Card import Card, CardState, Number, Suit
+from .Message import Message
 import random as rd
+
 
 class Deck():
     @classmethod
@@ -16,7 +17,7 @@ class Deck():
             for card in suit:
                 cls.stack.append(card)
         cls.table = []
-    
+
     #/shuffle
     @classmethod
     def shuffle(cls):
@@ -28,13 +29,14 @@ class Deck():
     def repr_table(cls):
         if len(cls.table) > 0:
             string = "Mesa: {\n "
-            for card_index in range(len(cls.table)-1, -1, -1):
-                string += ( "%d: %s\n" % (card_index, str(cls.table[card_index])) )
+            for card_index in range(len(cls.table) - 1, -1, -1):
+                string += ("%d: %s\n" %
+                           (card_index, str(cls.table[card_index])))
             string += "\n}"
             return Message(string, string)
         else:
             return Message("No cards on the table.", "No cards on the table.")
-    
+
     #/reset
     @classmethod
     def reset_deck(cls):
@@ -45,11 +47,13 @@ class Deck():
                     card.player.hand = []
                 cls.stack.append(card)
         return Message("The stack was reset.", "The stack was reset.")
-    
+
     #/clear_table
     @classmethod
     def clear_table(cls):
         while len(cls.table) > 0:
             card = cls.table.pop()
             cls.stack.insert(0, card)
-        return Message("All cards on the table were returned to the bottom of the stack.", "All cards on the table were returned to the bottom of the stack.")
+        return Message(
+            "All cards on the table were returned to the bottom of the stack.",
+            "All cards on the table were returned to the bottom of the stack.")
