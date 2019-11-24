@@ -27,7 +27,7 @@ class User():
         for i in range(n):
             card = Deck.stack.pop(-1)
             self.hand.append(card)
-            card.player = self.name
+            card.player = self
             string += str(card) + "\n"
         string += "}"
         return Message("%s drew %d card(s)" % (self.name, n), string)

@@ -14,11 +14,6 @@ def console(username, lock):
     while True:
         with lock:
             message = input(f'')
-            #cursor up one line
-            sys.stdout.write('\x1b[1A')
-            #delete last line
-            sys.stdout.write('\x1b[2K')
-            print(f"{username} > {message}")
 
             if message:
                 message = message.encode('utf-8')

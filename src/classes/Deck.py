@@ -56,7 +56,8 @@ class Deck_Class():
     #/reset
     @classmethod
     def reset_deck(cls):
-        for suit in cls.cards:
+        cls.stack = []
+        for suit in cls.cards.values():
             for card in suit:
                 card.state = CardState.STACK
                 if card.player != None:
