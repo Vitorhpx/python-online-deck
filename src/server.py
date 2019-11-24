@@ -2,6 +2,9 @@ import socket as socket
 import select as select
 import threading as threading
 from classes.User import User
+from classes.Commands import getCommand
+from classes.Deck import Deck
+from classes.Message import Message
 
 HEADER_LENGHT = 10
 HOST = '10.0.0.191'
@@ -11,7 +14,7 @@ MAX_LINE = 256
 MAX_SEND_LINE = 1024
 
 
-def receive_message(client_socket):
+def receive_raw_message_with_header(client_socket):
     try:
         message_header = client_socket.recv(HEADER_LENGHT)
         if not len(message_header):
@@ -37,7 +40,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         for notified_socket in read_sockets:
             if notified_socket == s:
                 client_socket, client_address = s.accept()
-                user_message = receive_message(client_socket)
+                user_message = receive_raw_message_with_header(client_socket)
                 if user_message is False:
                     continue
                 userHeader = user_message['header'].decode('utf-8')
@@ -48,23 +51,36 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                     'Accepted new connection from {}:{}, username: {}'.format(
                         *client_address, userName))
             else:
-                message = receive_message(notified_socket)
+                message = receive_raw_message_with_header(notified_socket)
                 if message is False:
                     print('Closed connection from: {}'.format(user.name))
                     sockets_list.remove(notified_socket)
                     del clients[notified_socket]
                     continue
                 user = clients[notified_socket]
-                print(
-                    f'Received message from {user.name}: {message["data"].decode("utf-8")}'
-                )
+                decodedMessage = message["data"].decode("utf-8")
+                print(f'Received message from {user.name}: {decodedMessage}')
+                messageToSend = {}
+                if (message['data'].decode('utf-8')[0] == '/'):
+                    messageToSend = getCommand(decodedMessage, user)
+                else:
+                    messageToSend = Message(decodedMessage, '')
+
                 for client_socket in clients:
                     if client_socket != notified_socket:
-
-                        client_socket.send(
-                            user.header.encode('utf-8') +
-                            user.name.encode('utf-8') + message['header'] +
-                            message['data'])
+                        if (len(messageToSend.to_others) > 0):
+                            client_socket.send(
+                                user.header.encode('utf-8') +
+                                user.name.encode('utf-8') +
+                                messageToSend.header_to_others +
+                                messageToSend.to_others)
+                    else:
+                        if (len(messageToSend.reply) > 0):
+                            client_socket.send(
+                                user.header.encode('utf-8') +
+                                user.name.encode('utf-8') +
+                                messageToSend.header_reply +
+                                messageToSend.reply)
 
         for notified_socket in exception_sockets:
             sockets_list.remove(notified_socket)

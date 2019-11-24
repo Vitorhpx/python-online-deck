@@ -16,7 +16,8 @@ MANUAL = """
 /table-draw
 """
 
-def getCommand(commandString, user:User):
+
+def getCommand(commandString, user: User):
     try:
         [command, *params] = commandString.split(' ', 1)
         if command == 'help':
@@ -56,4 +57,3 @@ def getCommand(commandString, user:User):
             return Message("", "Invalid command.")
     except:
         return Message("", "Invalid command.")
-        
