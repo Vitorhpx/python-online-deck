@@ -6,6 +6,7 @@ class User():
         self.name = username
         self.hand = []
 
+    #/hand
     def hand_repr(self):
         if len(self.hand) > 0:
             string = "{\n "
@@ -16,13 +17,22 @@ class User():
         else:
             return "Nenhuma carta."
     
-    def draw_card(self):
-        card = Deck.stack[-1].pop(-1)
-        self.hand.append(card)
-        card.player = self.ip_address
+    #/draw {n}
+    def draw_card(self, n=1):
+        for i in range(n):
+            card = Deck.stack[-1].pop(-1)
+            self.hand.append(card)
+            card.player = self.ip_address
 
+    #/play {index}
     def play_card(self, card_index):
         self.hand[card_index].play()
         card = self.hand[card_index].pop()
         Deck.table.append(card)
         return "%s plays a %s.\n" % (self.name, str(card))
+    
+    #/play all
+    def play_all(self):
+        for card_index in range(len(self.hand)):
+            self.play_card(card_index)
+        

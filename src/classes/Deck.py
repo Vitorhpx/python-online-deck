@@ -16,10 +16,24 @@ class Deck():
                 cls.stack.append(card)
         cls.table = []
     
+    #/shuffle
     @classmethod
     def shuffle(cls):
         rd.shuffle(cls.stack)
+
+    #/table
+    @classmethod
+    def repr_table(cls):
+        if len(cls.table) > 0:
+            string = "Mesa: {\n "
+            for card_index in range(len(cls.table)-1, -1, -1):
+                string += ( "%d: %s\n" % (card_index, str(cls.table[card_index])) )
+            string += "\n}"
+            return string
+        else:
+            return "Nenhuma carta na mesa."
     
+    #/reset
     @classmethod
     def reset_deck(cls):
         for suit in cls.cards:
@@ -29,10 +43,9 @@ class Deck():
                     card.player.hand = []
                 cls.stack.append(card)
     
+    #/clear_table
     @classmethod
     def clear_table(cls):
-        for suit in cls.cards:
-            for card in suit:
-                if card.state == CardState.TABLE:
-                    cls.stack.append(card)
-                    card.state = CardState.STACK
+        while len(cls.table) > 0:
+            card = cls.table.pop()
+            cls.stack.insert(0, card)
