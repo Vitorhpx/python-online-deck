@@ -1,6 +1,7 @@
 import socket as socket
 import select as select
 import threading as threading
+from classes.Commands import getCommand
 
 HEADER_LENGHT = 10
 HOST = '127.0.0.1'
@@ -8,7 +9,6 @@ PORT = 1234
 MAX_PENDING = 10
 MAX_LINE = 256
 MAX_SEND_LINE = 1024
-
 
 def receive_message(client_socket):
     try:
@@ -53,6 +53,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                     f'Received message from {user["data"].decode("utf-8")}: {message["data"].decode("utf-8")}')
                 for client_socket in clients:
                     if client_socket != notified_socket:
+
                         client_socket.send(
                             user['header'] + user['data'] + message['header'] + message['data'])
 
