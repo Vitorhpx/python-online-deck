@@ -1,4 +1,5 @@
 from Deck import Deck
+from Message import Message
 
 class User():
     def __init__(self, ip_address, username):
@@ -13,9 +14,9 @@ class User():
             for card_index in range(len(self.hand)):
                 string += ( "%d: %s\n" % (card_index, str(self.hand[card_index])) )
             string += "\n}"
-            return string
+            return Message(string, string)
         else:
-            return "You have no cards."
+            return Message("", "You have no cards.")
     
     #/draw {n}
     def draw_card(self, n=1):
@@ -26,21 +27,26 @@ class User():
             card.player = self.ip_address
             string += str(card) + "\n"
         string += "}"
-        return string
+        return Message("", string)
     
     #/show {n}
     def show_card(self, card_index):
-        return "%s shows a %s." % (self.name, self.hand[card_index])
+        string = "%s shows a %s." % (self.name, self.hand[card_index])
+        return (string, string)
 
     #/play {index}
     def play_card(self, card_index):
         self.hand[card_index].play()
         card = self.hand[card_index].pop()
         Deck.table.append(card)
-        return "%s plays a %s.\n" % (self.name, str(card))
+        string = "%s plays a %s.\n" % (self.name, str(card))
+        return Message(string, string)
     
     #/play all
     def play_all(self):
+        string = ""
         for card_index in range(len(self.hand)):
-            self.play_card(card_index)
+            single_play_message = self.play_card(card_index).to_others
+            string += single_play_message
+        return Message(string, string)
         
