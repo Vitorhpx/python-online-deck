@@ -1,4 +1,5 @@
 from Card import Card, CardState, Number, Suit
+from Message import Message
 import random as rd
 
 class Deck():
@@ -20,7 +21,7 @@ class Deck():
     @classmethod
     def shuffle(cls):
         rd.shuffle(cls.stack)
-        return "The deck was shuffled"
+        return Message("The deck was shuffled.", "The deck was shuffled.")
 
     #/table
     @classmethod
@@ -30,9 +31,9 @@ class Deck():
             for card_index in range(len(cls.table)-1, -1, -1):
                 string += ( "%d: %s\n" % (card_index, str(cls.table[card_index])) )
             string += "\n}"
-            return string
+            return Message(string, string)
         else:
-            return "No cards on the table."
+            return Message("No cards on the table.", "No cards on the table.")
     
     #/reset
     @classmethod
@@ -43,7 +44,7 @@ class Deck():
                 if card.player != None:
                     card.player.hand = []
                 cls.stack.append(card)
-        return "The stack was reset."
+        return Message("The stack was reset.", "The stack was reset.")
     
     #/clear_table
     @classmethod
@@ -51,4 +52,4 @@ class Deck():
         while len(cls.table) > 0:
             card = cls.table.pop()
             cls.stack.insert(0, card)
-        return "All cards on the table were returned to the bottom of the stack"
+        return Message("All cards on the table were returned to the bottom of the stack.", "All cards on the table were returned to the bottom of the stack.")
