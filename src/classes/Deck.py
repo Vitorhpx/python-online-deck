@@ -46,8 +46,7 @@ class Deck_Class():
         if len(cls.table) > 0:
             string = "Mesa: {\n "
             for card_index in range(len(cls.table) - 1, -1, -1):
-                string += ("%d: %s\n" %
-                           (card_index, str(cls.table[card_index])))
+                string += ("%d: %s\n" % (card_index, str(cls.table[card_index])))
             string += "\n}"
             return Message(string, string)
         else:

@@ -14,8 +14,7 @@ class User():
         if len(self.hand) > 0:
             string = "{\n "
             for card_index in range(len(self.hand)):
-                string += ("%d: %s\n" %
-                           (card_index, str(self.hand[card_index])))
+                string += ("%d: %s\n" % (card_index, str(self.hand[card_index])))
             string += "}"
             return Message("", string)
         else:
@@ -42,8 +41,7 @@ class User():
         self.hand[card_index].play()
         card = self.hand.pop(card_index)
         Deck.table.append(card)
-        string = "%s plays card #%d: %s.\n" % (self.name, card_index,
-                                               str(card))
+        string = "%s plays card #%d: %s.\n" % (self.name, card_index, str(card))
         return Message(string, string)
 
     #/play all
