@@ -5,7 +5,6 @@ import sys
 import threading
 
 HEADER_LENGTH = 10
-
 IP = "10.0.0.191"
 PORT = 1234
 my_username = input("Username: ")
@@ -69,5 +68,5 @@ while True:
 
     except Exception as e:
         # Any other exception - something happened, exit
-        print('Reading error: '.format(str(e)))
+        print('Reading error: {}'.format(str(e)))
         sys.exit()
