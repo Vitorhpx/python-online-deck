@@ -15,6 +15,11 @@ def console(username, lock):
     while True:
         with lock:
             message = input(f'')
+            #cursor up one line
+            sys.stdout.write('\x1b[1A')
+            #delete last line
+            sys.stdout.write('\x1b[2K')
+            print(f"\033[93m{username} > \033[0m{message}")
 
             if message:
                 message = message.encode('utf-8')
@@ -53,7 +58,7 @@ while True:
             message_length = int(message_header.decode('utf-8').strip())
             message = client_socket.recv(message_length).decode('utf-8')
 
-            print(f'{username} > {message}')
+            print(f' \033[94m{username} > \033[0m{message}')
 
     except IOError as e:
 
