@@ -1,5 +1,6 @@
-from .Deck import Deck
-from .Message import Message
+from Deck import Deck
+from Message import Message
+import random as rd
 
 
 class User():
@@ -26,7 +27,7 @@ class User():
         for i in range(n):
             card = Deck.stack[-1].pop(-1)
             self.hand.append(card)
-            card.player = self.ip_address
+            card.player = self.name
             string += str(card) + "\n"
         string += "}"
         return Message("", string)
@@ -50,4 +51,10 @@ class User():
         for card_index in range(len(self.hand)):
             single_play_message = self.play_card(card_index).to_others
             string += single_play_message
+        return Message(string, string)
+    
+    #/roll
+    def roll(self, end=10):
+        result = rd.randint(1, end)
+        string = "%s rolls a %d." % (self.name, result)
         return Message(string, string)
