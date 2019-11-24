@@ -18,7 +18,7 @@ class Deck_Class():
             for card in suit:
                 cls.stack.append(card)
         cls.table = []
-    
+
     #/table-draw
     @classmethod
     def draw_table(cls):
@@ -26,7 +26,7 @@ class Deck_Class():
         card.state = CardState.TABLE
         cls.table.append(card)
         string = "A %s was put on the table." % (str(card))
-        return(string, string)
+        return (string, string)
 
     #/stack
     @classmethod
@@ -73,5 +73,6 @@ class Deck_Class():
         return Message(
             "All cards on the table were returned to the bottom of the stack.",
             "All cards on the table were returned to the bottom of the stack.")
+
 
 Deck = Deck_Class()
