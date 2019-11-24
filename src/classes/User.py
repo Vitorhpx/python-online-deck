@@ -16,8 +16,8 @@ class User():
             for card_index in range(len(self.hand)):
                 string += ("%d: %s\n" %
                            (card_index, str(self.hand[card_index])))
-            string += "\n}"
-            return Message(string, string)
+            string += "}"
+            return Message("", string)
         else:
             return Message("", "You have no cards.")
 
@@ -25,12 +25,12 @@ class User():
     def draw_card(self, n=1):
         string = "You draw: {\n"
         for i in range(n):
-            card = Deck.stack[-1].pop(-1)
+            card = Deck.stack.pop(-1)
             self.hand.append(card)
             card.player = self.name
             string += str(card) + "\n"
         string += "}"
-        return Message("", string)
+        return Message("%s drew a card" % (self.name), string)
 
     #/show {n}
     def show_card(self, card_index):
@@ -40,9 +40,9 @@ class User():
     #/play {index}
     def play_card(self, card_index):
         self.hand[card_index].play()
-        card = self.hand[card_index].pop()
+        card = self.hand.pop(card_index)
         Deck.table.append(card)
-        string = "%s plays a %s.\n" % (self.name, str(card))
+        string = "%s plays card #%d: %s.\n" % (self.name, card_index, str(card))
         return Message(string, string)
 
     #/play all

@@ -2,6 +2,19 @@ from User import User
 from Deck import Deck
 from Message import Message
 
+MANUAL = """
+/hand\n
+/shuffle\n
+/draw {? number}\n
+/play {index | all}\n
+/table\n
+/clean-table\n
+/show {index}\n
+/roll {? range}\n
+/reset\n
+/stack
+"""
+
 def getCommand(commandString, user:User):
     try:
         [command, *params] = commandString.split(' ', 1)
@@ -34,8 +47,10 @@ def getCommand(commandString, user:User):
                 return user.roll
         elif command == 'reset':
             return Deck.reset_deck()
+        elif command == 'stack':
+            return Deck.count_deck()
         else:
-            return Message("", "Comando inválido.")
+            return Message("", "Invalid command.")
     except:
-        return Message("", "Comando inválido.")
+        return Message("", "Invalid command.")
         

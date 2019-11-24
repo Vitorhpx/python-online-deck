@@ -1,9 +1,10 @@
 from .Card import Card, CardState, Number, Suit
 from .Message import Message
+from abc import ABC
 import random as rd
 
 
-class Deck():
+class Deck_Class():
     @classmethod
     def __init__(cls):
         cls.cards = {
@@ -13,10 +14,16 @@ class Deck():
             Suit.CLUBS: [Card(num, Suit.CLUBS) for num in Number]
         }
         cls.stack = []
-        for suit in cls.cards:
+        for suit in cls.cards.values():
             for card in suit:
                 cls.stack.append(card)
         cls.table = []
+    
+    #/stack
+    @classmethod
+    def count_deck(cls):
+        string = "There are %d cards in the stack." % (len(cls.stack))
+        return Message(string, string)
 
     #/shuffle
     @classmethod
@@ -57,3 +64,5 @@ class Deck():
         return Message(
             "All cards on the table were returned to the bottom of the stack.",
             "All cards on the table were returned to the bottom of the stack.")
+
+Deck = Deck_Class()
