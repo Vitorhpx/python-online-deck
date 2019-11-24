@@ -15,7 +15,7 @@ class User():
             string += "\n}"
             return string
         else:
-            return "Nenhuma carta."
+            return "You have no cards."
     
     #/draw {n}
     def draw_card(self, n=1):
